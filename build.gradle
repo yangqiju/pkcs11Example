@@ -1,0 +1,38 @@
+apply plugin:'java'
+apply plugin:'eclipse'
+apply plugin:'maven'
+
+sourceCompatibility = 1.7  
+tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+jar{ exclude("logback.xml") }
+
+dependencies {
+	compile 'org.projectlombok:lombok:1.12.2'
+	compile 'ch.qos.logback:logback-classic:1.0.0'
+	compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
+	compile 'org.apache.httpcomponents:httpclient:4.5.2'
+	compile 'org.apache.commons:commons-lang3:3.4'
+	compile files('libs/sunpkcs11.jar')
+	testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+sourceSets {
+	main {
+		java { srcDir 'src/main/java' }
+		resources { srcDir 'src/main/resources' }
+	}
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+artifacts { archives sourcesJar }
+
